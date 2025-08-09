@@ -1,0 +1,52 @@
+{
+  "$id": "https://relay-spec.example/schemas/events/parcel-created.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ParcelCreated",
+  "type": "object",
+  "allOf": [
+    { "$ref": "https://relay-spec.example/schemas/event-envelope.schema.json" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_version":  { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_id":       { "type": "string", "format": "uuid" },
+        "parcel_id":      { "type": "string", "format": "uuid" },
+        "event_type":     { "const": "PARCEL_CREATED" },
+        "event_ts":       { "type": "string", "format": "date-time" },
+        "producer":       { "type": "string", "minLength": 1 },
+        "sequence_no":    { "type": "integer", "minimum": 0 },
+        "trace_id":       { "type": "string" },
+
+        "merchant_id": { "type": "string", "format": "uuid" },
+        "origin_address_id": { "type": "string", "format": "uuid" },
+        "destination_address_id": { "type": "string", "format": "uuid" },
+        "service_tier": { "type": "string", "enum": ["NEXT_DAY", "TWO_DAY", "ECONOMY"] },
+        "created_ts": { "type": "string", "format": "date-time" },
+        "promised_window_start": { "type": "string", "format": "date-time" },
+        "promised_window_end": { "type": "string", "format": "date-time" },
+        "weight_grams": { "type": "integer", "minimum": 0 },
+        "volume_cm3": { "type": "integer", "minimum": 0 }
+      },
+      "required": [
+        "schema_version",
+        "event_version",
+        "event_id",
+        "parcel_id",
+        "event_type",
+        "event_ts",
+        "producer",
+        "sequence_no",
+
+        "merchant_id",
+        "origin_address_id",
+        "destination_address_id",
+        "service_tier",
+        "created_ts",
+        "promised_window_start",
+        "promised_window_end"
+      ]
+    }
+  ]
+}

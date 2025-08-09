@@ -1,0 +1,18 @@
+{
+    "topics": [
+      {
+        "environment": "dev",
+        "topic_id": "parcel-events",
+        "project_id": "relay-analytics-demo",
+        "message_storage_policy": { "allowed_persistence_regions": [ "europe-west2" ] },
+        "labels": { "layer": "events", "purpose": "hot" }
+      },
+      {
+        "environment": "dev",
+        "topic_id": "parcel-events-dlq",
+        "project_id": "relay-analytics-demo",
+        "message_storage_policy": { "allowed_persistence_regions": [ "europe-west2" ] },
+        "labels": { "layer": "events", "purpose": "deadletter" }
+      }
+    ]
+  }

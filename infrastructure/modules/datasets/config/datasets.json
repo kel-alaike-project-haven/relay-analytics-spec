@@ -1,0 +1,81 @@
+{
+    "bigquery_datasets": [
+      {
+        "environment": "dev",
+        "dataset_id": "relay_bronze",
+        "project_id": "relay-analytics-demo",
+        "location": "EU",
+        "description": "Raw events (promoted fields + payload JSON)",
+        "labels": { "layer": "bronze" },
+        "default_table_expiration_ms": 86400000,
+        "default_partition_expiration_ms": 86400000,
+        "access": [
+          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
+          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" },
+          { "role": "OWNER",  "user_by_email": "alaikek@hotmail.com" }
+        ],
+        "require_partition_filter": true
+      },
+      {
+        "environment": "dev",
+        "dataset_id": "relay_silver",
+        "project_id": "relay-analytics-demo",
+        "location": "EU",
+        "description": "Conformed, typed, deduped canonical streams and SCD dims",
+        "labels": { "layer": "silver" },
+        "default_table_expiration_ms": 86400000,
+        "default_partition_expiration_ms": 86400000,
+        "access": [
+          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
+          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" }
+        ],
+        "require_partition_filter": true
+      },
+      {
+        "environment": "dev",
+        "dataset_id": "relay_gold",
+        "project_id": "relay-analytics-demo",
+        "location": "EU",
+        "description": "Business-ready facts and dims (KPIs)",
+        "labels": { "layer": "gold" },
+        "default_table_expiration_ms": 86400000,
+        "default_partition_expiration_ms": 86400000,
+        "access": [
+          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
+          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" }
+        ],
+        "require_partition_filter": true
+      },
+      {
+        "environment": "dev",
+        "dataset_id": "relay_presentation",
+        "project_id": "relay-analytics-demo",
+        "location": "EU",
+        "description": "Star schemas for BI",
+        "labels": { "layer": "presentation" },
+        "default_table_expiration_ms": 86400000,
+        "default_partition_expiration_ms": 86400000,
+        "access": [
+          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
+          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" }
+        ],
+        "require_partition_filter": false
+      },
+      {
+        "environment": "dev",
+        "dataset_id": "relay_export",
+        "project_id": "relay-analytics-demo",
+        "location": "EU",
+        "description": "Denormalised export tables for APIs",
+        "labels": { "layer": "export" },
+        "default_table_expiration_ms": 86400000,
+        "default_partition_expiration_ms": 86400000,
+        "access": [
+          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
+          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" }
+        ],
+        "require_partition_filter": true
+      }
+    ]
+  }
+  

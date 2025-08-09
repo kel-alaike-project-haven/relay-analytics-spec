@@ -1,0 +1,40 @@
+{
+  "$id": "https://relay-spec.example/schemas/event-envelope.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EventEnvelope",
+  "type": "object",
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+    "event_version":  { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+    "event_id":       { "type": "string", "format": "uuid" },
+    "parcel_id":      { "type": "string", "format": "uuid" },
+    "event_type":     {
+      "type": "string",
+      "enum": [
+        "PARCEL_CREATED",
+        "SCAN_IN_DEPOT",
+        "SCAN_OUT_DEPOT",
+        "LOADED_TO_VAN",
+        "OUT_FOR_DELIVERY",
+        "ETA_SET",
+        "ETA_UPDATED",
+        "DELIVERED",
+        "EXCEPTION"
+      ]
+    },
+    "event_ts":       { "type": "string", "format": "date-time" },
+    "producer":       { "type": "string", "minLength": 1 },
+    "sequence_no":    { "type": "integer", "minimum": 0 },
+    "trace_id":       { "type": "string" }
+  },
+  "required": [
+    "schema_version",
+    "event_version",
+    "event_id",
+    "parcel_id",
+    "event_type",
+    "event_ts",
+    "producer",
+    "sequence_no"
+  ]
+}

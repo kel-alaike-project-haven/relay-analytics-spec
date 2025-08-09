@@ -1,0 +1,41 @@
+{
+  "$id": "https://relay-spec.example/schemas/events/loaded-to-van.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LoadedToVan",
+  "type": "object",
+  "allOf": [
+    { "$ref": "https://relay-spec.example/schemas/event-envelope.schema.json" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_version":  { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_id":       { "type": "string", "format": "uuid" },
+        "parcel_id":      { "type": "string", "format": "uuid" },
+        "event_type":     { "const": "LOADED_TO_VAN" },
+        "event_ts":       { "type": "string", "format": "date-time" },
+        "producer":       { "type": "string", "minLength": 1 },
+        "sequence_no":    { "type": "integer", "minimum": 0 },
+        "trace_id":       { "type": "string" },
+
+        "route_id":        { "type": "string", "format": "uuid" },
+        "courier_id":      { "type": "string", "format": "uuid" },
+        "planned_stop_seq":{ "type": "integer", "minimum": 1 }
+      },
+      "required": [
+        "schema_version",
+        "event_version",
+        "event_id",
+        "parcel_id",
+        "event_type",
+        "event_ts",
+        "producer",
+        "sequence_no",
+
+        "route_id",
+        "courier_id"
+      ]
+    }
+  ]
+}

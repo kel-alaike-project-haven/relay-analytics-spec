@@ -1,0 +1,45 @@
+{
+  "$id": "https://relay-spec.example/schemas/events/delivered.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Delivered",
+  "type": "object",
+  "allOf": [
+    { "$ref": "https://relay-spec.example/schemas/event-envelope.schema.json" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_version":  { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_id":       { "type": "string", "format": "uuid" },
+        "parcel_id":      { "type": "string", "format": "uuid" },
+        "event_type":     { "const": "DELIVERED" },
+        "event_ts":       { "type": "string", "format": "date-time" },
+        "producer":       { "type": "string", "minLength": 1 },
+        "sequence_no":    { "type": "integer", "minimum": 0 },
+        "trace_id":       { "type": "string" },
+
+        "delivered_ts":  { "type": "string", "format": "date-time" },
+        "attempt_number":{ "type": "integer", "minimum": 1 },
+        "outcome":       { "type": "string", "enum": ["SUCCESS", "CARDED", "FAILED", "RETURNED"] },
+        "failure_reason":{ "type": "string" },
+        "route_id":      { "type": "string", "format": "uuid" },
+        "courier_id":    { "type": "string", "format": "uuid" }
+      },
+      "required": [
+        "schema_version",
+        "event_version",
+        "event_id",
+        "parcel_id",
+        "event_type",
+        "event_ts",
+        "producer",
+        "sequence_no",
+
+        "delivered_ts",
+        "attempt_number",
+        "outcome"
+      ]
+    }
+  ]
+}

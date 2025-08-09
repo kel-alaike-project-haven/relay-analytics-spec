@@ -1,0 +1,44 @@
+{
+  "$id": "https://relay-spec.example/schemas/events/eta-set.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EtaSet",
+  "type": "object",
+  "allOf": [
+    { "$ref": "https://relay-spec.example/schemas/event-envelope.schema.json" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_version":  { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_id":       { "type": "string", "format": "uuid" },
+        "parcel_id":      { "type": "string", "format": "uuid" },
+        "event_type":     { "const": "ETA_SET" },
+        "event_ts":       { "type": "string", "format": "date-time" },
+        "producer":       { "type": "string", "minLength": 1 },
+        "sequence_no":    { "type": "integer", "minimum": 0 },
+        "trace_id":       { "type": "string" },
+
+        "route_id": { "type": "string", "format": "uuid" },
+        "predicted_delivery_ts": { "type": "string", "format": "date-time" },
+        "generated_ts": { "type": "string", "format": "date-time" },
+        "source": { "type": "string", "enum": ["PLANNER", "RECOMPUTE", "MANUAL"] }
+      },
+      "required": [
+        "schema_version",
+        "event_version",
+        "event_id",
+        "parcel_id",
+        "event_type",
+        "event_ts",
+        "producer",
+        "sequence_no",
+
+        "route_id",
+        "predicted_delivery_ts",
+        "generated_ts",
+        "source"
+      ]
+    }
+  ]
+}

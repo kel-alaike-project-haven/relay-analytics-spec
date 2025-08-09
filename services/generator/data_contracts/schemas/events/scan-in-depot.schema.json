@@ -1,0 +1,43 @@
+{
+  "$id": "https://relay-spec.example/schemas/events/scan-in-depot.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScanInDepot",
+  "type": "object",
+  "allOf": [
+    { "$ref": "https://relay-spec.example/schemas/event-envelope.schema.json" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_version":  { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_id":       { "type": "string", "format": "uuid" },
+        "parcel_id":      { "type": "string", "format": "uuid" },
+        "event_type":     { "const": "SCAN_IN_DEPOT" },
+        "event_ts":       { "type": "string", "format": "date-time" },
+        "producer":       { "type": "string", "minLength": 1 },
+        "sequence_no":    { "type": "integer", "minimum": 0 },
+        "trace_id":       { "type": "string" },
+
+        "depot_id":   { "type": "string", "format": "uuid" },
+        "scanner_id": { "type": "string" },
+        "area_code":  { "type": "string" },
+        "belt_no":    { "type": "integer", "minimum": 1 }
+      },
+      "required": [
+        "schema_version",
+        "event_version",
+        "event_id",
+        "parcel_id",
+        "event_type",
+        "event_ts",
+        "producer",
+        "sequence_no",
+
+        "depot_id",
+        "scanner_id",
+        "area_code"
+      ]
+    }
+  ]
+}

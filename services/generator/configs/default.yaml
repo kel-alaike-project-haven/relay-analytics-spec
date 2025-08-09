@@ -1,0 +1,28 @@
+pubsub:
+  topic: parcel-events
+rate:
+  events_per_sec: 40
+schema:
+  version: "1.0.0"
+lifecycle:
+  in_depot_min: 5
+  in_depot_max: 60
+  out_depot_min: 10
+  out_depot_max: 180
+  loaded_min: 5
+  loaded_max: 45
+  ofd_min: 1
+  ofd_max: 15
+eta:
+  mean_minutes: 120
+  sd_minutes: 30
+  update_prob: 0.35
+attempts:
+  success_rate_first: 0.95
+  success_rate_second: 0.85
+exceptions:
+  MISSORT: 0.02
+  DEPOT_CAPACITY: 0.02
+  ADDRESS_ISSUE: 0.01
+  VEHICLE_BREAKDOWN: 0.005
+  CUSTOMER_NOT_HOME: 0.015

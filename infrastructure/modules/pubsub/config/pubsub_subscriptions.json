@@ -1,0 +1,50 @@
+{
+    "subscriptions": [
+      {
+        "environment": "dev",
+        "subscription_id": "sub-hot-bq",
+        "project_id": "relay-analytics-demo",
+        "topic_id": "parcel-events",
+        "ack_deadline_seconds": 10,
+        "retain_acked_messages": false,
+        "message_retention_duration": "604800s",
+        "enable_message_ordering": true,
+        "labels": { "path": "hot" },
+        "push_config": {
+          "endpoint": "https://ingest-relay-analytics-demo-ew2.a.run.app/ingest",
+          "oidc_service_account_email": "sa-ingest@relay-analytics-demo.iam.gserviceaccount.com",
+          "audience": "https://ingest-relay-analytics-demo-ew2.a.run.app/ingest"
+        },
+        "dead_letter_policy": {
+          "dead_letter_topic_id": "parcel-events-dlq",
+          "max_delivery_attempts": 5
+        },
+        "retry_policy": {
+          "minimum_backoff": "10s",
+          "maximum_backoff": "600s"
+        }
+      },
+      {
+        "environment": "dev",
+        "subscription_id": "sub-cold-archive",
+        "project_id": "relay-analytics-demo",
+        "topic_id": "parcel-events",
+        "ack_deadline_seconds": 20,
+        "retain_acked_messages": true,
+        "message_retention_duration": "604800s",
+        "enable_message_ordering": true,
+        "labels": { "path": "cold" },
+        "push_config": null,
+        "dead_letter_policy": {
+          "dead_letter_topic_id": "parcel-events-dlq",
+          "max_delivery_attempts": 5
+        },
+        "retry_policy": {
+          "minimum_backoff": "10s",
+          "maximum_backoff": "600s"
+        },
+        "filter": ""
+      }
+    ]
+  }
+  

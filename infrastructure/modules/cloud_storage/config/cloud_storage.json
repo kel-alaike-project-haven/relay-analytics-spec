@@ -1,0 +1,58 @@
+{
+    "buckets": [
+      {
+        "environment": "dev",
+        "name": "relay-analytics-demo-raw",
+        "project_id": "relay-analytics-demo",
+        "location": "europe-west2",
+        "storage_class": "STANDARD",
+        "uniform_bucket_level_access": true,
+        "versioning": false,
+        "retention_policy": null,
+        "labels": { "layer": "raw", "purpose": "archive" },
+        "lifecycle_rules": [
+          { "action": { "type": "SetStorageClass", "storageClass": "NEARLINE" }, "condition": { "age": 30 } },
+          { "action": { "type": "SetStorageClass", "storageClass": "COLDLINE" }, "condition": { "age": 90 } },
+          { "action": { "type": "Delete" }, "condition": { "age": 365 } }
+        ],
+        "cors": []
+      },
+      {
+        "environment": "dev",
+        "name": "relay-analytics-demo-dlq",
+        "project_id": "relay-analytics-demo",
+        "location": "europe-west2",
+        "storage_class": "STANDARD",
+        "uniform_bucket_level_access": true,
+        "versioning": true,
+        "retention_policy": { "retention_period": 7776000 },
+        "labels": { "layer": "dlq", "purpose": "deadletter" },
+        "lifecycle_rules": [
+          { "action": { "type": "SetStorageClass", "storageClass": "NEARLINE" }, "condition": { "age": 30 } },
+          { "action": { "type": "Delete" }, "condition": { "age": 365 } }
+        ],
+        "cors": []
+      },
+      {
+        "environment": "dev",
+        "name": "relay-analytics-demo-docs",
+        "project_id": "relay-analytics-demo",
+        "location": "europe-west2",
+        "storage_class": "STANDARD",
+        "uniform_bucket_level_access": true,
+        "versioning": true,
+        "retention_policy": null,
+        "labels": { "layer": "docs", "purpose": "static" },
+        "lifecycle_rules": [],
+        "cors": [
+          {
+            "origin": [ "*" ],
+            "method": [ "GET", "HEAD" ],
+            "responseHeader": [ "Content-Type" ],
+            "maxAgeSeconds": 3600
+          }
+        ]
+      }
+    ]
+  }
+  

@@ -1,0 +1,39 @@
+{
+  "$id": "https://relay-spec.example/schemas/events/out-for-delivery.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OutForDelivery",
+  "type": "object",
+  "allOf": [
+    { "$ref": "https://relay-spec.example/schemas/event-envelope.schema.json" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_version":  { "type": "string", "pattern": "^1\\.\\d+\\.\\d+$" },
+        "event_id":       { "type": "string", "format": "uuid" },
+        "parcel_id":      { "type": "string", "format": "uuid" },
+        "event_type":     { "const": "OUT_FOR_DELIVERY" },
+        "event_ts":       { "type": "string", "format": "date-time" },
+        "producer":       { "type": "string", "minLength": 1 },
+        "sequence_no":    { "type": "integer", "minimum": 0 },
+        "trace_id":       { "type": "string" },
+
+        "route_id": { "type": "string", "format": "uuid" },
+        "first_planned_eta_ts": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "schema_version",
+        "event_version",
+        "event_id",
+        "parcel_id",
+        "event_type",
+        "event_ts",
+        "producer",
+        "sequence_no",
+
+        "route_id"
+      ]
+    }
+  ]
+}
