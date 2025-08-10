@@ -12,6 +12,7 @@ variable "environment" {
 locals {
 
   # ---------- Load raw JSON ----------
+  cloud_build_data       = jsondecode(file("../../modules/cloud_build/config/cloud_build.json"))
   cloud_run_data         = jsondecode(file("../../modules/cloud_run/config/cloud_run.json"))
   cloud_storage_data     = jsondecode(file("../../modules/cloud_storage/config/cloud_storage.json"))
   datasets_data          = jsondecode(file("../../modules/datasets/config/datasets.json"))
@@ -19,6 +20,12 @@ locals {
   pubsub_topics          = jsondecode(file("../../modules/pubsub/config/pubsub_topics.json"))
 
   # ---------- Normalize to keyed maps (env/id) ----------
+
+  all_cloud_build_services = {
+    for s in local.cloud_build_data.cloud_build_services :
+    "${s.environment}/${s.service_name}" => s
+  }
+
   all_cloud_run_services = {
     for s in local.cloud_run_data.cloud_run_services :
     "${s.environment}/${s.service_name}" => s
@@ -45,6 +52,11 @@ locals {
   }
 
   # ---------- Environment-filtered subsets ----------
+  cloud_build_services = {
+    for k, v in local.all_cloud_build_services : k => v
+    if v.environment == var.environment
+  }
+
   cloud_run_services = {
     for k, v in local.all_cloud_run_services : k => v
     if v.environment == var.environment
@@ -71,9 +83,10 @@ locals {
   }
 
   # ---------- Convenience lists (sometimes easier than maps) ----------
-  cloud_run_services_list = values(local.cloud_run_services)
-  buckets_list            = values(local.buckets)
-  datasets_list           = values(local.datasets)
-  topics_list             = values(local.topics)
-  subscriptions_list      = values(local.subscriptions)
+  cloud_build_services_list = values(local.cloud_build_services)
+  cloud_run_services_list   = values(local.cloud_run_services)
+  buckets_list              = values(local.buckets)
+  datasets_list             = values(local.datasets)
+  topics_list               = values(local.topics)
+  subscriptions_list        = values(local.subscriptions)
 }

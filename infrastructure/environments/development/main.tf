@@ -21,6 +21,17 @@ provider "google-beta" {
 # Modules (loaded from ../../modules/*)
 #############################################
 
+module "cloud_build" {
+  source = "../../modules/cloud_build"
+
+  providers = {
+    google      = google.dev
+  }
+
+  # Pass the env-filtered services map from locals.tf
+  all_cloud_build_variables = local.cloud_build_services
+}
+
 # Cloud Run (services + optional push subscription wiring)
 module "cloud_run" {
   source = "../../modules/cloud_run"
