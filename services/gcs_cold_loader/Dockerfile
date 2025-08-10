@@ -10,8 +10,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
+COPY main.py .
+COPY data_contracts ./data_contracts
 
-# Copy data contracts from sibling folder
-COPY ../data_contracts ./data_contracts
+RUN useradd -m -u 10001 runner
+USER runner
 
-CMD ["python", "app/main.py"]
+CMD ["python", "main.py"]
