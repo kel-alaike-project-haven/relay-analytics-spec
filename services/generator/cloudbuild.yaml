@@ -2,16 +2,16 @@ steps:
 - name: gcr.io/cloud-builders/docker
   args: [
     "build",
-    "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-repo/generator:$SHORT_SHA",
+    "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA",
     "services/generator"
   ]
 - name: gcr.io/cloud-builders/docker
   args: [
-    "push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-repo/generator:$SHORT_SHA"
+    "push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA"
   ]
 
 images:
-- "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-repo/generator:$SHORT_SHA"
+- "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA"
 
 options:
   logging: CLOUD_LOGGING_ONLY
