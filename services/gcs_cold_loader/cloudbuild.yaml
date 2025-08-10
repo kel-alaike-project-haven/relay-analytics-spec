@@ -14,18 +14,24 @@ steps:
       "build",
       "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:$SHORT_SHA",
       "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:latest",
-      "."
+      "services/gcs_cold_loader"
     ]
 
   # Step 3: Push images
   - name: gcr.io/cloud-builders/docker
-    args: [
-      "push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:$SHORT_SHA"
-    ]
+    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:$SHORT_SHA"]
+
   - name: gcr.io/cloud-builders/docker
-    args: [
-      "push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:latest"
-    ]
+    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:latest"]
+
+  # Cleanup
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        cd services/bq_hot_loader
+        make clean-contracts
 
 images:
 - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:$SHORT_SHA"

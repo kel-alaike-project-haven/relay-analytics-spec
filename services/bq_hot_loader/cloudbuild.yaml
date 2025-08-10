@@ -10,8 +10,7 @@ steps:
 
   # Build Docker image
   - name: gcr.io/cloud-builders/docker
-    args:
-      [
+    args: [
         "build",
         "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:$SHORT_SHA",
         "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:latest",
