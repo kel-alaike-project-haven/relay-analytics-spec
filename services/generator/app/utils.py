@@ -24,7 +24,7 @@ def normal_minutes(mu: float, sd: float, lo: float) -> timedelta:
 
 def poisson_knuth(lam: float) -> int:
     """
-    Draw a Poisson(λ) variate using Knuth's algorithm.
+    Draw a Poisson(λ) variate using Knuth's algorithm. 
     Accurate and simple for small-to-moderate λ (our rate is per second).
     """
     import math
