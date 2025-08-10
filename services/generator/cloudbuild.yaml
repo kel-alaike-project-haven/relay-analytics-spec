@@ -12,5 +12,6 @@ steps:
 
 images:
 - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-repo/generator:$SHORT_SHA"
+
 options:
   logging: CLOUD_LOGGING_ONLY
