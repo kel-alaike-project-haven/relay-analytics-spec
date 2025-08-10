@@ -22,45 +22,54 @@
       },
       {
         "environment": "dev",
-        "service_name": "bq-hot-loader",
+        "service_name": "ingest",
         "project_id": "relay-analytics-demo",
         "region": "europe-west2",
-        "image": "europe-west2-docker.pkg.dev/relay-analytics-demo/relay-analytics-spec/bq-hot-loader:latest",
-        "service_account_email": "sa-bq-loader@relay-analytics-demo.iam.gserviceaccount.com",
-        "ingress": "all",
+        "image": "europe-west2-docker.pkg.dev/relay-analytics-demo/relay-repo/ingest:1.0.0",
+        "service_account_email": "sa-ingest@relay-analytics-demo.iam.gserviceaccount.com",
+        "ingress": "internal-and-cloud-load-balancing",
         "cpu": 1,
         "memory": "512Mi",
-        "concurrency": 10,
+        "concurrency": 50,
         "min_instances": 0,
-        "max_instances": 2,
-        "request_timeout_seconds": 300,
+        "max_instances": 5,
+        "request_timeout_seconds": 30,
         "allow_unauthenticated": false,
         "env": {
           "PROJECT_ID": "relay-analytics-demo",
-          "SUBSCRIPTION_ID": "sub-hot-bq",
-          "BQ_DATASET": "bronze",
-          "BQ_TABLE": "raw_events"
+          "BQ_TABLE": "relay_bronze.parcel_events",
+          "DLQ_TOPIC": "parcel-events-dlq"
+        },
+        "push_subscription": {
+          "subscription_id": "sub-hot-bq",
+          "topic_id": "parcel-events",
+          "oidc_service_account_email": "sa-ingest@relay-analytics-demo.iam.gserviceaccount.com",
+          "endpoint_path": "/ingest",
+          "ack_deadline_seconds": 10,
+          "enable_message_ordering": true,
+          "dead_letter_topic_id": "parcel-events-dlq",
+          "max_delivery_attempts": 5,
+          "minimum_backoff": "10s"
         }
       },
       {
         "environment": "dev",
-        "service_name": "gcs-cold-loader",
+        "service_name": "api",
         "project_id": "relay-analytics-demo",
         "region": "europe-west2",
-        "image": "europe-west2-docker.pkg.dev/relay-analytics-demo/relay-analytics-spec/gcs-cold-loader:latest",
-        "service_account_email": "sa-gcs-cold-loader@relay-analytics-demo.iam.gserviceaccount.com",
+        "image": "europe-west2-docker.pkg.dev/relay-analytics-demo/relay-repo/api:1.0.0",
+        "service_account_email": "sa-api@relay-analytics-demo.iam.gserviceaccount.com",
         "ingress": "all",
         "cpu": 1,
         "memory": "512Mi",
-        "concurrency": 10,
+        "concurrency": 80,
         "min_instances": 0,
-        "max_instances": 2,
-        "request_timeout_seconds": 300,
-        "allow_unauthenticated": false,
+        "max_instances": 3,
+        "request_timeout_seconds": 60,
+        "allow_unauthenticated": true,
         "env": {
           "PROJECT_ID": "relay-analytics-demo",
-          "SUBSCRIPTION_ID": "sub-cold-archive",
-          "BUCKET_NAME": "relay-analytics-demo-raw"
+          "EXPORT_TABLE": "relay_gold.fact_parcel_lifecycle"
         }
       }
     ]

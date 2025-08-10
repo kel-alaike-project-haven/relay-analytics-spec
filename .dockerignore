@@ -1,0 +1,23 @@
+# VCS
+.git
+.gitignore
+
+# Python
+**/__pycache__/
+**/*.pyc
+.venv
+.env
+.env.*
+
+# Terraform
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/.terraform.lock.hcl
+
+# Mac / OS
+.DS_Store
+
+# Build artifacts
+dist
+build

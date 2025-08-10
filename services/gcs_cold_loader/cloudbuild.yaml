@@ -1,0 +1,35 @@
+steps:
+  # Step 1: Copy data_contracts into gcs_cold_loader dir
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        cd services/gcs_cold_loader
+        make copy-contracts
+
+  # Step 2: Build image
+  - name: gcr.io/cloud-builders/docker
+    args: [
+      "build",
+      "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:$SHORT_SHA",
+      "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:latest",
+      "."
+    ]
+
+  # Step 3: Push images
+  - name: gcr.io/cloud-builders/docker
+    args: [
+      "push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:$SHORT_SHA"
+    ]
+  - name: gcr.io/cloud-builders/docker
+    args: [
+      "push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:latest"
+    ]
+
+images:
+- "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:$SHORT_SHA"
+- "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:latest"
+
+options:
+  logging: CLOUD_LOGGING_ONLY

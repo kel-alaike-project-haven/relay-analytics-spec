@@ -21,8 +21,8 @@ locals {
 
   # ---------- Normalize to keyed maps (env/id) ----------
 
-  all_cloud_build_services = {
-    for s in local.cloud_build_data.cloud_build_services :
+  all_cloud_build_triggers = {
+    for s in local.cloud_build_data.cloud_build_triggers :
     "${s.environment}/${s.service_name}" => s
   }
 
@@ -53,7 +53,7 @@ locals {
 
   # ---------- Environment-filtered subsets ----------
   cloud_build_services = {
-    for k, v in local.all_cloud_build_services : k => v
+    for k, v in local.all_cloud_build_triggers : k => v
     if v.environment == var.environment
   }
 

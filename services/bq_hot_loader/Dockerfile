@@ -2,26 +2,18 @@ FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app \
-    PORT=8080
+    PYTHONPATH=/app
 
 WORKDIR /app
 
-# 1) Install deps
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 2) Copy application code, configs, and data contracts
 COPY app ./app
 COPY main.py .
-COPY configs ./configs
 COPY data_contracts ./data_contracts
 
-# 3) Non-root user (optional)
 RUN useradd -m -u 10001 runner
 USER runner
 
-EXPOSE 8080
-
-# 4) Start API
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["python", "main.py"]

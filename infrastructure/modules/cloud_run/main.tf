@@ -8,12 +8,17 @@ resource "google_cloud_run_service" "svc_dev" {
   name     = each.value.service_name
   location = each.value.region
 
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress" = try(each.value.ingress, "all")
+    }
+  }
+
   template {
     metadata {
       annotations = {
-        "run.googleapis.com/ingress"               = each.value.ingress
-        "autoscaling.knative.dev/minScale"        = tostring(try(each.value.min_instances, 0))
-        "autoscaling.knative.dev/maxScale"        = tostring(try(each.value.max_instances, 10))
+        "autoscaling.knative.dev/minScale" = tostring(try(each.value.min_instances, 0))
+        "autoscaling.knative.dev/maxScale" = tostring(try(each.value.max_instances, 3))
       }
     }
     spec {
@@ -53,4 +58,17 @@ resource "google_cloud_run_service" "svc_dev" {
   }
 
   autogenerate_revision_name = true
+}
+
+# If you want unauthenticated access, add this IAM binding:
+resource "google_cloud_run_service_iam_member" "svc_invoker_public" {
+  for_each = {
+    for k, v in var.all_cloud_run_variables : k => v
+    if v.environment == "dev" && try(v.allow_unauthenticated, false)
+  }
+  project  = each.value.project_id
+  location = each.value.region
+  service  = google_cloud_run_service.svc_dev[each.key].name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }

@@ -4,7 +4,7 @@
         "environment": "dev",
         "service_name": "generator",
         "github_owner": "kel-alaike-project-haven",
-        "github_repo": "relay-analytics",
+        "github_repo": "relay-analytics-spec",
         "branch": "main",
         "cloudbuild_file": "services/generator/cloudbuild.yaml"
       }

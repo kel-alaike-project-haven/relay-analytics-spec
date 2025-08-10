@@ -1,0 +1,42 @@
+steps:
+  # Copy data contracts into bq_hot_loader
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        cd services/bq_hot_loader
+        make copy-contracts
+
+  # Build Docker image
+  - name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "build",
+        "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:$SHORT_SHA",
+        "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:latest",
+        "services/bq_hot_loader"
+      ]
+
+  # Push both tags
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:$SHORT_SHA"]
+
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:latest"]
+
+  # Cleanup
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        cd services/bq_hot_loader
+        make clean-contracts
+
+images:
+  - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:$SHORT_SHA"
+  - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:latest"
+
+options:
+  logging: CLOUD_LOGGING_ONLY

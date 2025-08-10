@@ -29,7 +29,7 @@ module "cloud_build" {
   }
 
   # Pass the env-filtered services map from locals.tf
-  all_cloud_build_variables = local.cloud_build_services
+  all_cloud_build_triggers_variables = local.cloud_build_services
 }
 
 # Cloud Run (services + optional push subscription wiring)

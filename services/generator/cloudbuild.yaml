@@ -1,23 +1,42 @@
 steps:
-- name: gcr.io/cloud-builders/docker
-  args: [
-    "build",
-    "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA",
-    "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:latest",
-    "services/generator"
-  ]
-- name: gcr.io/cloud-builders/docker
-  args: [
-    "push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA"
-  ]
-- name: gcr.io/cloud-builders/docker
-  args: [
-    "push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:latest"
-  ]
+  # Step 1: Copy data_contracts into generator dir
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        cd services/generator
+        make copy-contracts
+
+  # Step 2: Build Docker image from generator folder
+  - name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "build",
+        "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA",
+        "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:latest",
+        "services/generator"
+      ]
+
+  # Step 3: Push both tags
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA"]
+
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:latest"]
+
+  # Step 4: Cleanup data_contracts folder
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        cd services/generator
+        make clean-contracts
 
 images:
-- "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA"
-- "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:latest"
+  - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:$SHORT_SHA"
+  - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/generator:latest"
 
 options:
   logging: CLOUD_LOGGING_ONLY

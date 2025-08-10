@@ -1,6 +1,6 @@
 resource "google_cloudbuild_trigger" "trigger" {
   for_each = {
-    for k, v in var.all_cloud_build_variables : k => v
+    for k, v in var.all_cloud_build_triggers_variables : k => v
     if v.environment == "dev"
   }
 
