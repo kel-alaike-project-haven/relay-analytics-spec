@@ -24,8 +24,5 @@ USER runner
 EXPOSE 8080
 
 # 4) Start the API
-# Use the module that DEFINES your FastAPI() instance:
-# - If app/__init__.py exposes `app`, keep "app:app".
-# - If main.py exposes `app`, change to ["uvicorn","main:app",...]
 CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8080"]
 
