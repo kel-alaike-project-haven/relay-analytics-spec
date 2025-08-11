@@ -2,3 +2,5 @@ google-cloud-pubsub
 google-cloud-storage
 fastavro
 jsonschema
+fastapi
+uvicorn
