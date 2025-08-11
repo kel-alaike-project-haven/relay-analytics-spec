@@ -1,5 +1,6 @@
 import base64
 import json
+import binascii
 from concurrent.futures import TimeoutError
 from google.cloud import pubsub_v1
 from app.validator import EventValidator
@@ -8,14 +9,27 @@ from app import config
 
 def callback(message):
     try:
-        data = json.loads(base64.b64decode(message.data).decode("utf-8"))
+        raw_bytes = message.data
+        try:
+            # Attempt base64 decode with validation
+            decoded_bytes = base64.b64decode(raw_bytes, validate=True)
+            json_str = decoded_bytes.decode("utf-8")
+        except (binascii.Error, UnicodeDecodeError):
+            # If not base64, assume it's already UTF-8 JSON
+            json_str = raw_bytes.decode("utf-8")
+
+        data = json.loads(json_str)
+
         validator.validate_event(data)
         path = loader.upload_event(data)
         print(f"Uploaded to {path}")
+
         message.ack()
+
     except Exception as e:
         print(f"Error processing message: {e}")
         message.nack()
+
 
 if __name__ == "__main__":
     validator = EventValidator()

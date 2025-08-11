@@ -1,6 +1,6 @@
 import json
 from google.cloud import pubsub_v1
-from app.validator import SchemaValidator
+from app.validator import EventValidator
 from app.loader import BigQueryLoader
 
 from app import config
@@ -11,7 +11,7 @@ class PubSubSubscriber:
         self.subscription_path = self.subscriber.subscription_path(
             config.PROJECT_ID, config.SUBSCRIPTION_ID
         )
-        self.validator = SchemaValidator()
+        self.validator = EventValidator()
         self.loader = BigQueryLoader()
 
     def callback(self, message):

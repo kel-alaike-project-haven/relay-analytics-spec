@@ -12,7 +12,7 @@
         "access": [
           { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
           { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" },
-          { "role": "OWNER",  "user_by_email": "alaikek@hotmail.com" }
+          { "role": "OWNER",  "user_by_email": "kel.alaike@projecthaven.co.uk" }
         ],
         "require_partition_filter": true
       },
@@ -26,8 +26,8 @@
         "default_table_expiration_ms": 86400000,
         "default_partition_expiration_ms": 86400000,
         "access": [
-          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
-          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" }
+          { "role": "READER", "user_by_email": "alaikek1@gmail.com" },
+          { "role": "WRITER", "user_by_email": "kel.alaike@projecthaven.co.uk" }
         ],
         "require_partition_filter": true
       },
@@ -41,8 +41,8 @@
         "default_table_expiration_ms": 86400000,
         "default_partition_expiration_ms": 86400000,
         "access": [
-          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
-          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" }
+          { "role": "READER", "user_by_email": "alaikek1@gmail.com" },
+          { "role": "WRITER", "user_by_email": "kel.alaike@projecthaven.co.uk" }
         ],
         "require_partition_filter": true
       },
@@ -56,8 +56,8 @@
         "default_table_expiration_ms": 86400000,
         "default_partition_expiration_ms": 86400000,
         "access": [
-          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
-          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" }
+          { "role": "READER", "user_by_email": "alaikek1@gmail.com" },
+          { "role": "WRITER", "user_by_email": "kel.alaike@projecthaven.co.uk" }
         ],
         "require_partition_filter": false
       },
@@ -71,8 +71,8 @@
         "default_table_expiration_ms": 86400000,
         "default_partition_expiration_ms": 86400000,
         "access": [
-          { "role": "READER", "user_by_email": "kel.alaike@projecthaven.co.uk" },
-          { "role": "WRITER", "user_by_email": "alaikek1@gmail.com" }
+          { "role": "READER", "user_by_email": "alaikek1@gmail.com" },
+          { "role": "WRITER", "user_by_email": "kel.alaike@projecthaven.co.uk" }
         ],
         "require_partition_filter": true
       }
