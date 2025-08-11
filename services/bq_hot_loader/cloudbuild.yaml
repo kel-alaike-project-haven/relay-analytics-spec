@@ -12,17 +12,17 @@ steps:
   - name: gcr.io/cloud-builders/docker
     args: [
         "build",
-        "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:$SHORT_SHA",
-        "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:latest",
+        "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq-hot-loader:$SHORT_SHA",
+        "-t", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq-hot-loader:latest",
         "services/bq_hot_loader"
       ]
 
   # Push both tags
   - name: gcr.io/cloud-builders/docker
-    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:$SHORT_SHA"]
+    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq-hot-loader:$SHORT_SHA"]
 
   - name: gcr.io/cloud-builders/docker
-    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:latest"]
+    args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq-hot-loader:latest"]
 
   # Cleanup
   - name: gcr.io/cloud-builders/gcloud
@@ -34,8 +34,8 @@ steps:
         make clean-contracts
 
 images:
-  - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:$SHORT_SHA"
-  - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq_hot_loader:latest"
+  - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq-hot-loader:$SHORT_SHA"
+  - "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/bq-hot-loader:latest"
 
 options:
   logging: CLOUD_LOGGING_ONLY
