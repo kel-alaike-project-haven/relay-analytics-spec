@@ -17,3 +17,4 @@ RUN useradd -m -u 10001 runner
 USER runner
 
 CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8080"]
+
