@@ -9,6 +9,9 @@ The stack is composed of **three core services**:
 2. **BQ Hot Loader** – Consumes parcel events from Pub/Sub and loads validated data into BigQuery for real-time analytics.
 3. **GCS Cold Loader** – Validates and stores historical or batch event data in GCS as Avro files for archival or backfill processing.
 
+## Full Architecture Design
+<img width="2520" height="1760" alt="Relay _ Parcel Network Core Models - Architecture (2)" src="https://github.com/user-attachments/assets/d144eb87-7cd4-4333-b845-c781fa782b4f" />
+
 ---
 
 ## Event Flow
