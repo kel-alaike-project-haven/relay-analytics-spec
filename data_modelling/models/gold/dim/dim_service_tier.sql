@@ -4,7 +4,7 @@
     alias='dim_service_tier'
 ) }}
 
--- DISTINCT SERVICE TIERS WITH SAMPLE PROMISED WINDOWS
+-- Distinct service windows with sample promised
 with base as (
   select
     service_tier,

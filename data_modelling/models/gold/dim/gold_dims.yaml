@@ -21,7 +21,7 @@ models:
       - name: service_tier
         tests:
           - accepted_values:
-              values: ['STANDARD','EXPRESS','SAME_DAY']   # adjust to your catalog
+              values: ['STANDARD','EXPRESS','SAME_DAY']   
               severity: warn
       - name: dbt_valid_from
         tests: [not_null]

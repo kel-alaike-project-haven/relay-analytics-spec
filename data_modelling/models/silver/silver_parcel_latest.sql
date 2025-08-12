@@ -1,13 +1,13 @@
--- models/silver/silver_parcel_latest.sql
--- ============================================================
--- SILVER LAYER (snapshot): latest event per parcel_id
--- - Derives FROM silver_parcel_events (already deduped + conformed)
--- - Keeps only the most recent event for each parcel_id
--- - Incremental with merge ON parcel_id:
---     * On full refresh: compute latest for all parcels
---     * On incremental runs: recompute only parcels that changed
--- - Partitioned BY event_date; clustered BY parcel_id
--- ============================================================
+
+/*
+SILVER LAYER (snapshot): latest event per parcel_id
+- Derives FROM silver_parcel_events (already deduped + conformed)
+- Keeps only the most recent event for each parcel_id
+- Incremental with merge ON parcel_id:
+    * On full refresh: compute latest for all parcels
+    * On incremental runs: recompute only parcels that changed
+- Partitioned BY event_date; clustered BY parcel_id
+*/
 
 {{ config(
     materialized='incremental',

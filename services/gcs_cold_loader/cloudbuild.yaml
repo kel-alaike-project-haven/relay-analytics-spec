@@ -1,5 +1,5 @@
 steps:
-  # Step 1: Copy data_contracts into gcs_cold_loader dir
+  # Copy data_contracts into gcs_cold_loader dir
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
     args:
@@ -8,7 +8,7 @@ steps:
         cd services/gcs_cold_loader
         make copy-contracts
 
-  # Step 2: Build image
+  # Build image
   - name: gcr.io/cloud-builders/docker
     args: [
       "build",
@@ -17,7 +17,7 @@ steps:
       "services/gcs_cold_loader"
     ]
 
-  # Step 3: Push images
+  # Push images
   - name: gcr.io/cloud-builders/docker
     args: ["push", "europe-west2-docker.pkg.dev/$PROJECT_ID/relay-analytics-spec/gcs-cold-loader:$SHORT_SHA"]
 

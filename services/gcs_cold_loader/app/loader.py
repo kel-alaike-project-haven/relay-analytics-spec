@@ -10,7 +10,7 @@ from google.cloud import storage
 
 from app import config
 
-# ------------------------------ helpers ---------------------------------
+# Helpers
 
 def _load_json(path: str) -> Dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
@@ -63,7 +63,7 @@ def _avro_primitive_for_json_type(prop: Dict[str, Any]) -> str:
         "boolean": "boolean",
     }.get(t, "string")
 
-# ------------------------------ loader ----------------------------------
+# Loader
 
 class GCSAvroLoader:
     """
@@ -105,7 +105,7 @@ class GCSAvroLoader:
         loaded = ", ".join(sorted(self.contracts.keys()))
         print(f"[GCSAvroLoader] Loaded {len(self.contracts)} event contracts: {loaded}")
 
-    # -------- schema composition (AVRO) --------
+    # Schema composition (AVRO)
 
     def _build_avro_schema_for_event(self, event: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -153,7 +153,7 @@ class GCSAvroLoader:
             "fields": fields,
         }
 
-    # -------- event normalization for AVRO --------
+    # Event normalization for AVRO
 
     def _normalize_for_avro(self, event: Dict[str, Any], avro_schema: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -204,7 +204,7 @@ class GCSAvroLoader:
 
         return row
 
-    # -------- public API --------
+    # Public API 
 
     def upload_event(self, event: Dict[str, Any]) -> str:
         evt_type = event.get("event_type")

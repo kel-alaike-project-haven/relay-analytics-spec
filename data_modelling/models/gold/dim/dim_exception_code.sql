@@ -4,9 +4,8 @@
     alias='dim_exception_code'
 ) }}
 
--- DISTINCT EXCEPTION CODES AND HINTS
+-- Distinct exception codes and hints
 select
-  exception_code as exception_code_sk,
   exception_code,
   any_value(stage_hint) as stage_hint_example,
   count(*) as occurrences

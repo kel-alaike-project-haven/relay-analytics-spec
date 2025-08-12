@@ -9,10 +9,7 @@ from google.api_core.exceptions import NotFound, Conflict, PreconditionFailed
 
 from app import config
 
-# --------------------------------------------------------------------------------------
 # Schema helpers: load JSON Schemas and map to BigQuery types
-# --------------------------------------------------------------------------------------
-
 _JSON_TO_BQ_PRIMITIVES = {
     "string": "STRING",
     "integer": "INT64",
@@ -90,10 +87,7 @@ def _extract_event_properties(schema: Dict) -> Dict[str, Dict]:
         props.update(part.get("properties", {}) or {})
     return props
 
-
-# --------------------------------------------------------------------------------------
 # Loader
-# --------------------------------------------------------------------------------------
 
 class BigQueryLoader:
     """
@@ -244,18 +238,18 @@ class BigQueryLoader:
                     return
 
     def insert_event(self, event: Dict):
-        # 1) Ensure table created
+        # Ensure table created
         self._ensure_table_once(event)
 
-        # 2) Fill missing contract fields with None (so all contract cols are present)
+        # Fill missing contract fields with None (so all contract cols are present)
         contract = self._contract_for_event(event.get("event_type", ""))
         all_props = _merge_contract_props(self.envelope, contract)
         event_filled = _fill_missing_fields(event, all_props)
 
-        # 3) Ensure schema can accept all keys
+        # Ensure schema can accept all keys
         self._ensure_schema_superset(event_filled)
 
-        # 4) Insert row
+        # Insert row
         errors = self.client.insert_rows_json(
             self.table_id,
             [event_filled],

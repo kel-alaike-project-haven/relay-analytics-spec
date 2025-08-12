@@ -5,7 +5,7 @@
     cluster_by=['depot_id']
 ) }}
 
--- SIMPLE DEPOT LOOKUP FROM EVENTS
+-- Simple depot lookup from events
 with stats as (
   select
     depot_id,
@@ -18,7 +18,6 @@ with stats as (
   group by depot_id
 )
 select
-  depot_id as depot_sk,
   depot_id,
   first_seen_ts,
   last_seen_ts,

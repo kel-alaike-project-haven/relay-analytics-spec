@@ -1,11 +1,8 @@
--- models/silver/silver_parcel_events.sql
--- ============================================================
--- SILVER LAYER: Conformed, typed, de-duplicated parcel events.
--- - Removes duplicates using event_id
--- - Applies latest event per (parcel_id, event_type)
--- - Clusters by parcel_id, event_type
--- - Partitions by event_date for efficient querying
--- ============================================================
+/*SILVER LAYER: Conformed, typed, de-duplicated parcel events.
+- Removes duplicates using event_id
+- Applies latest event per (parcel_id, event_type)
+- Clusters by parcel_id, event_type
+- Partitions by event_date for efficient querying*/
 
 {{ config(
     materialized='incremental',
@@ -67,7 +64,7 @@ WITH source_data AS (
 
 ),
 
--- 1) DE-DUPLICATE BY EVENT_ID (KEEP LATEST BY EVENT_TS)
+-- Deduplicate by event_id (keep latest by event_ts)
 deduplicated AS (
     SELECT
         ranked.schema_version,
@@ -155,7 +152,7 @@ deduplicated AS (
     WHERE ranked.rn = 1
 ),
 
--- 2) LATEST EVENT PER (PARCEL_ID, EVENT_TYPE) BY EVENT_TS
+-- Latest event per (parcel_id, event_type) by event_ts
 latest_event_per_type AS (
     SELECT
         ranked.schema_version,

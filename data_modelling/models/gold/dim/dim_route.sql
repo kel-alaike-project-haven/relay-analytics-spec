@@ -5,7 +5,7 @@
     cluster_by=['route_id']
 ) }}
 
--- SIMPLE ROUTE LOOKUP
+-- Simple route lookup
 with stats as (
   select
     route_id,

@@ -4,9 +4,8 @@
     alias='dim_merchant'
 ) }}
 
--- CURRENT (OPEN-ENDED) SCD2 ROWS ONLY
+-- current merchant rows only
 select
-  merchant_id as merchant_sk,
   merchant_id,
   service_tier,
   promised_window_start,

@@ -108,60 +108,15 @@ uvicorn app.main:create_app --factory --reload --port 8000
 Once running, hit the **generate endpoint**:
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/generate"      -H "Content-Type: application/json"      -d '{
-           "count": 5,
-           "config": {
-             "schema": { "version": "1.0.0" },
-             "lifecycle": {
-               "in_depot_min": 1, "in_depot_max": 5,
-               "out_depot_min": 2, "out_depot_max": 6,
-               "loaded_min": 1, "loaded_max": 3,
-               "ofd_min": 2, "ofd_max": 4
-             },
-             "exceptions": {
-               "MISSORT": 0.1,
-               "DEPOT_CAPACITY": 0.05,
-               "VEHICLE_BREAKDOWN": 0.02,
-               "ADDRESS_ISSUE": 0.02,
-               "CUSTOMER_NOT_HOME": 0.05
-             },
-             "eta": { "mean_minutes": 90, "sd_minutes": 15, "update_prob": 0.5 }
-           }
-         }'
+curl -X POST "http://localhost:8080/generate" \
+  -H "Content-Type: application/json" \
+  -d '{"event_type": "parcel_created", "count": 5}'
 ```
 
 This will:
 - Generate 5 parcel lifecycles
 - Publish each event to Pub/Sub (topic from `config.yaml`)
 - Return a success response once published
-
----
-
-## 📬 Pub/Sub Setup
-
-### Create topic & subscription (with ordering enabled)
-```bash
-TOPIC=parcel-events
-SUB=sub-hot-bq
-
-gcloud pubsub topics create $TOPIC
-
-gcloud pubsub subscriptions create $SUB   --topic=$TOPIC   --enable-message-ordering
-```
-
----
-
-## ☁️ Deploy to Cloud Run
-
-### 1. Build & push image
-```bash
-gcloud builds submit --tag gcr.io/<PROJECT_ID>/parcel-generator
-```
-
-### 2. Deploy
-```bash
-gcloud run deploy parcel-generator   --image gcr.io/<PROJECT_ID>/parcel-generator   --platform managed   --region europe-west2   --allow-unauthenticated
-```
 
 ---
 
@@ -173,15 +128,6 @@ gcloud run deploy parcel-generator   --image gcr.io/<PROJECT_ID>/parcel-generato
 | `PUBSUB_TOPIC`      | Pub/Sub topic name |
 | `PUBSUB_ORDERING`   | `true` to enable ordering |
 | `CONFIG_PATH`       | Path to YAML config file |
-
----
-
-## 🧪 Testing in Cloud Run
-
-Once deployed, hit the public endpoint:
-```bash
-curl -X POST "https://<your-service>.run.app/generate"      -H "Content-Type: application/json"      -d '{"count": 3, "config": {...}}'
-```
 
 ---
 
