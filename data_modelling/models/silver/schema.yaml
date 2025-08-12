@@ -1,0 +1,284 @@
+version: 2
+
+models:
+  - name: silver_parcel_events
+    description: >
+      Conformed, typed, and de-duplicated parcel events (one row per event_id,
+      and the latest row per (parcel_id, event_type)). Partitioned by event_date,
+      clustered by (parcel_id, event_type).
+    config:
+      schema: relay_silver
+      alias: silver_parcel_events
+      materialized: incremental
+      unique_key: event_id
+      partition_by:
+        field: event_date
+        data_type: date
+      cluster_by: [parcel_id, event_type]
+    columns:
+      - name: event_id
+        description: Globally unique identifier for an event.
+        tests:
+          - not_null
+          - unique
+
+      - name: parcel_id
+        description: Business key for the parcel.
+        tests:
+          - not_null
+
+      - name: event_type
+        description: Type of event (domain-defined enumeration).
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - PARCEL_CREATED
+                - SCAN_IN_DEPOT
+                - SCAN_OUT_DEPOT
+                - LOADED_TO_VAN
+                - OUT_FOR_DELIVERY
+                - ETA_SET
+                - ETA_UPDATED
+                - DELIVERED
+                - EXCEPTION
+
+      - name: event_ts
+        description: Event timestamp in UTC.
+        tests:
+          - not_null
+
+      - name: event_date
+        description: Date derived from event_ts for partitioning.
+
+      - name: schema_version
+        description: Contract schema version for this event record.
+
+      - name: event_version
+        description: Producer event version.
+
+      - name: producer
+        description: Event producer application/service identifier.
+
+      - name: sequence_no
+        description: Monotonic sequence number for ordering within a producer stream.
+
+      - name: trace_id
+        description: Correlation id for tracing across services.
+
+      - name: merchant_id
+        description: Merchant identifier for PARCEL_CREATED context.
+
+      - name: origin_address_id
+        description: Origin address id.
+
+      - name: destination_address_id
+        description: Destination address id.
+
+      - name: service_tier
+        description: Service tier (e.g., NEXT_DAY, STANDARD).
+
+      - name: created_ts
+        description: Parcel creation timestamp.
+
+      - name: promised_window_start
+        description: Start of delivery promise window.
+
+      - name: promised_window_end
+        description: End of delivery promise window.
+
+      - name: weight_grams
+        description: Parcel weight in grams.
+
+      - name: volume_cm3
+        description: Parcel volume in cubic centimeters.
+
+      - name: depot_id
+        description: Depot identifier for scan events.
+
+      - name: scanner_id
+        description: Scanner device identifier.
+
+      - name: area_code
+        description: Depot/area code.
+
+      - name: belt_no
+        description: Conveyor/belt number at depot.
+
+      - name: route_id
+        description: Route identifier.
+
+      - name: courier_id
+        description: Courier identifier.
+
+      - name: planned_stop_seq
+        description: Planned stop sequence on a route.
+
+      - name: exception_code
+        description: Exception code taxonomy.
+
+      - name: stage_hint
+        description: Exception stage hint.
+
+      - name: details
+        description: Free-text details for exceptions.
+
+      - name: first_planned_eta_ts
+        description: First planned ETA timestamp.
+
+      - name: predicted_delivery_ts
+        description: Model-predicted delivery timestamp.
+
+      - name: generated_ts
+        description: Timestamp the prediction/ETA was generated.
+
+      - name: source
+        description: Source of ETA (system, model, manual).
+
+      - name: delivered_ts
+        description: Actual delivery completion timestamp.
+
+      - name: attempt_number
+        description: Delivery attempt number.
+
+      - name: outcome
+        description: Outcome of delivery attempt.
+
+      - name: failure_reason
+        description: Failure reason for unsuccessful outcomes.
+
+  - name: silver_parcel_latest
+    description: >
+      Snapshot table that keeps the most recent event per parcel_id across all event types.
+      Derived from silver_parcel_events. Partitioned by event_date, clustered by parcel_id.
+    config:
+      schema: relay_silver
+      alias: silver_parcel_latest
+      materialized: incremental
+      unique_key: parcel_id
+      incremental_strategy: merge
+      partition_by:
+        field: event_date
+        data_type: date
+      cluster_by: [parcel_id]
+    columns:
+      - name: parcel_id
+        description: Business key for the parcel (one row per parcel).
+        tests:
+          - not_null
+          - unique
+
+      - name: event_id
+        description: The latest event_id for this parcel_id (relationships to silver_parcel_events).
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_parcel_events')
+              field: event_id
+
+      - name: event_type
+        description: Event type of the latest event for this parcel.
+
+      - name: event_ts
+        description: Timestamp of the latest event for this parcel.
+        tests:
+          - not_null
+
+      - name: event_date
+        description: Date derived from event_ts of the latest event (for partitioning).
+
+      - name: schema_version
+        description: Contract schema version of the latest event.
+
+      - name: event_version
+        description: Producer event version of the latest event.
+
+      - name: producer
+        description: Producer id of the latest event.
+
+      - name: sequence_no
+        description: Sequence number of the latest event.
+
+      - name: trace_id
+        description: Trace/correlation id of the latest event.
+
+      - name: merchant_id
+        description: Merchant identifier (if applicable).
+
+      - name: origin_address_id
+        description: Origin address id (if applicable).
+
+      - name: destination_address_id
+        description: Destination address id (if applicable).
+
+      - name: service_tier
+        description: Service tier (if applicable).
+
+      - name: created_ts
+        description: Parcel creation timestamp (if applicable).
+
+      - name: promised_window_start
+        description: Start of promised delivery window (if applicable).
+
+      - name: promised_window_end
+        description: End of promised delivery window (if applicable).
+
+      - name: weight_grams
+        description: Parcel weight in grams (if applicable).
+
+      - name: volume_cm3
+        description: Parcel volume in cubic centimeters (if applicable).
+
+      - name: depot_id
+        description: Depot identifier (if applicable).
+
+      - name: scanner_id
+        description: Scanner device identifier (if applicable).
+
+      - name: area_code
+        description: Area code (if applicable).
+
+      - name: belt_no
+        description: Belt number (if applicable).
+
+      - name: route_id
+        description: Route identifier (if applicable).
+
+      - name: courier_id
+        description: Courier identifier (if applicable).
+
+      - name: planned_stop_seq
+        description: Planned stop sequence (if applicable).
+
+      - name: exception_code
+        description: Exception code (if applicable).
+
+      - name: stage_hint
+        description: Exception stage hint (if applicable).
+
+      - name: details
+        description: Exception details (if applicable).
+
+      - name: first_planned_eta_ts
+        description: First planned ETA timestamp (if applicable).
+
+      - name: predicted_delivery_ts
+        description: Model-predicted delivery timestamp (if applicable).
+
+      - name: generated_ts
+        description: Timestamp when the prediction was generated (if applicable).
+
+      - name: source
+        description: Source of ETA (if applicable).
+
+      - name: delivered_ts
+        description: Actual delivery timestamp (if applicable).
+
+      - name: attempt_number
+        description: Delivery attempt number (if applicable).
+
+      - name: outcome
+        description: Outcome of delivery (if applicable).
+
+      - name: failure_reason
+        description: Failure reason (if applicable).

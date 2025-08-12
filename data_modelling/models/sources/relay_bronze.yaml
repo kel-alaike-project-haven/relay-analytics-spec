@@ -1,0 +1,125 @@
+version: 2
+
+sources:
+  - name: relay_bronze
+    database: relay-analytics-demo
+    schema: relay_bronze
+    loader: hot+cold loaders
+    loaded_at_field: event_ts
+
+    freshness:
+      warn_after: {count: 30, period: minute}
+      error_after: {count: 120, period: minute}
+
+    tables:
+      - name: parcel_events
+        description: Raw parcel events from hot (BQ) and cold (GCS→BQ) loaders.
+        loaded_at_field: event_ts
+        freshness:
+          # Limit to recent partitions so BigQuery is happy with require_partition_filter
+          filter: "event_ts >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 3 DAY)"
+        columns:
+          # Envelope / core
+          - name: schema_version
+            description: Contract schema version string.
+          - name: event_version
+            description: Producer event version string.
+          - name: event_id
+            description: Globally unique event identifier.
+            tests:
+              - not_null
+          - name: parcel_id
+            description: Business key for the parcel.
+            tests:
+              - not_null
+          - name: event_type
+            description: Event type enum.
+            tests:
+              - not_null
+              - accepted_values:
+                  values:
+                    - PARCEL_CREATED
+                    - SCAN_IN_DEPOT
+                    - SCAN_OUT_DEPOT
+                    - LOADED_TO_VAN
+                    - OUT_FOR_DELIVERY
+                    - ETA_SET
+                    - ETA_UPDATED
+                    - EXCEPTION
+                    - DELIVERED
+          - name: event_ts
+            description: Event occurrence timestamp (UTC).
+            tests:
+              - not_null
+          - name: producer
+            description: Producer system/service name.
+          - name: sequence_no
+            description: Monotonic sequence number per producer/stream (if provided).
+          - name: trace_id
+            description: Upstream trace/correlation id.
+
+          # PARCEL_CREATED extras
+          - name: merchant_id
+            description: Merchant identifier (creator/owner of the parcel).
+          - name: origin_address_id
+            description: Address id for the origin.
+          - name: destination_address_id
+            description: Address id for the destination.
+          - name: service_tier
+            description: Service tier (e.g., standard, next-day).
+          - name: created_ts
+            description: Timestamp when the parcel record was created.
+          - name: promised_window_start
+            description: SLA/ETA window start.
+          - name: promised_window_end
+            description: SLA/ETA window end.
+          - name: weight_grams
+            description: Weight in grams.
+          - name: volume_cm3
+            description: Volume in cubic centimeters.
+
+          # Depot / scanning
+          - name: depot_id
+            description: Depot identifier.
+          - name: scanner_id
+            description: Scanner device id.
+          - name: area_code
+            description: Depot area/zone code.
+          - name: belt_no
+            description: Belt number used during scan.
+
+          # Routing / ODF
+          - name: route_id
+            description: Route identifier for delivery run.
+          - name: courier_id
+            description: Courier identifier.
+          - name: planned_stop_seq
+            description: Planned stop sequence number on the route.
+
+          # Exceptions
+          - name: exception_code
+            description: Exception code/category.
+          - name: stage_hint
+            description: Stage of the journey when exception occurred.
+          - name: details
+            description: Free-form details for exception or general notes.
+
+          # ETA events
+          - name: first_planned_eta_ts
+            description: First generated/planned ETA timestamp.
+          - name: predicted_delivery_ts
+            description: Predicted delivery timestamp (model/system).
+          - name: generated_ts
+            description: When the prediction/ETA was generated.
+          - name: source
+            description: Source system/provider for ETA/prediction.
+
+          # Delivered
+          - name: delivered_ts
+            description: Timestamp when parcel was delivered.
+          - name: attempt_number
+            description: Delivery attempt number.
+          - name: outcome
+            description: Outcome status for delivery.
+          - name: failure_reason
+            description: Reason for failed delivery attempt (if any).

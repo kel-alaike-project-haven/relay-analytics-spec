@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: dim_courier
+    description: "Current SCD2 courier dimension (open-ended rows from snapshot)."
+    columns:
+      - name: courier_sk
+        tests: [not_null, unique]
+      - name: courier_id
+        tests: [not_null]
+      - name: dbt_valid_from
+        tests: [not_null]
+
+  - name: dim_merchant
+    description: "Current SCD2 merchant dimension (open-ended rows from snapshot)."
+    columns:
+      - name: merchant_sk
+        tests: [not_null, unique]
+      - name: merchant_id
+        tests: [not_null]
+      - name: service_tier
+        tests:
+          - accepted_values:
+              values: ['STANDARD','EXPRESS','SAME_DAY']   # adjust to your catalog
+              severity: warn
+      - name: dbt_valid_from
+        tests: [not_null]
+
+  - name: dim_depot
+    description: "SCD1 depot dimension derived from events."
+    columns:
+      - name: depot_sk
+        tests: [not_null, unique]
+      - name: depot_id
+        tests: [not_null, unique]
+
+  - name: dim_route
+    description: "SCD1 route dimension derived from events."
+    columns:
+      - name: route_sk
+        tests: [not_null, unique]
+      - name: route_id
+        tests: [not_null, unique]
+
+  - name: dim_exception_code
+    description: "Lookup of exception codes observed in events."
+    columns:
+      - name: exception_code_sk
+        tests: [not_null, unique]
+      - name: exception_code
+        tests: [not_null, unique]
+      - name: stage_hint_example
+
+  - name: dim_service_tier
+    description: "Lookup of service tiers observed in events."
+    columns:
+      - name: service_tier_sk
+        tests: [not_null, unique]
+      - name: service_tier
+        tests: [not_null, unique]

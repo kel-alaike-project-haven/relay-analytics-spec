@@ -1,0 +1,112 @@
+version: 2
+
+models:
+  - name: fact_parcel_delivery_attempts
+    description: "One row per delivery attempt per parcel (DELIVERED or EXCEPTION)."
+    columns:
+      - name: parcel_id
+        tests: [not_null]
+      - name: attempt_number
+        tests: [not_null]
+      - name: attempt_ts
+        tests: [not_null]
+      - name: event_type
+        description: "Source event type of the attempt."
+        tests:
+          - accepted_values:
+              values: ['DELIVERED', 'EXCEPTION']
+      - name: route_id
+      - name: courier_id
+      - name: outcome
+      - name: failure_reason
+      - name: event_date
+        tests: [not_null]
+    tests:
+      - unique:
+          column_name: "concat(cast(parcel_id as string), '-', cast(attempt_number as string))"
+      # Will pass once dims exist; set to warn meanwhile
+      - relationships:
+          to: ref('dim_courier')
+          field: courier_id
+          severity: warn
+      - relationships:
+          to: ref('dim_route')
+          field: route_id
+          severity: warn
+
+  - name: fact_parcel_deliveries
+    description: "One row per delivered parcel."
+    columns:
+      - name: parcel_id
+        tests: [not_null, unique]
+      - name: delivered_ts
+        tests: [not_null]
+      - name: event_type
+        tests:
+          - accepted_values:
+              values: ['DELIVERED']
+      - name: merchant_id
+      - name: route_id
+      - name: courier_id
+      - name: service_tier
+      - name: promised_window_end
+      - name: event_date
+        tests: [not_null]
+    tests:
+      - relationships:
+          to: ref('dim_merchant')
+          field: merchant_id
+          severity: warn
+      - relationships:
+          to: ref('dim_courier')
+          field: courier_id
+          severity: warn
+      - relationships:
+          to: ref('dim_route')
+          field: route_id
+          severity: warn
+
+  - name: fact_eta_events
+    description: "All ETA set/updated events per parcel."
+    columns:
+      - name: parcel_id
+        tests: [not_null]
+      - name: generated_ts
+        tests: [not_null]
+      - name: predicted_delivery_ts
+        tests: [not_null]
+      - name: event_type
+        tests:
+          - accepted_values:
+              values: ['ETA_SET', 'ETA_UPDATED']
+      - name: route_id
+      - name: event_date
+        tests: [not_null]
+    tests:
+      - unique:
+          column_name: "concat(cast(parcel_id as string), '-', cast(generated_ts as string))"
+      - relationships:
+          to: ref('dim_route')
+          field: route_id
+          severity: warn
+
+  - name: fact_depot_visits
+    description: "Depot dwell per parcel visit (paired SCAN_IN_DEPOT/SCAN_OUT_DEPOT)."
+    columns:
+      - name: parcel_id
+        tests: [not_null]
+      - name: depot_id
+        tests: [not_null]
+      - name: in_depot_ts
+        tests: [not_null]
+      - name: out_depot_ts
+      - name: dwell_minutes
+      - name: event_date
+        tests: [not_null]
+    tests:
+      - unique:
+          column_name: "concat(cast(parcel_id as string), '-', cast(depot_id as string), '-', cast(visit_seq as string))"
+      - relationships:
+          to: ref('dim_depot')
+          field: depot_id
+          severity: warn

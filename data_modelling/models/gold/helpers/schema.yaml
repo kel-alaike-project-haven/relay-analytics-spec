@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: vw_eta_error_p95
+    description: "Daily p95 of absolute ETA error (minutes) by depot/courier/merchant."
+    columns:
+      - name: event_date
+        tests:
+          - not_null
+      - name: depot_id
+      - name: courier_id
+      - name: merchant_id
+      - name: eta_p95_error_min
+        tests:
+          - not_null
+    tests:
+      - unique:
+          column_name: "concat(cast(event_date as string), '|', coalesce(cast(depot_id as string), ''), '|', coalesce(cast(courier_id as string), ''), '|', coalesce(cast(merchant_id as string), ''))"
+
+  - name: vw_depot_dwell_p95
+    description: "Daily p95 of depot dwell (minutes) by depot."
+    columns:
+      - name: event_date
+        tests:
+          - not_null
+      - name: depot_id
+        tests:
+          - not_null
+      - name: depot_dwell_p95_min
+        tests:
+          - not_null
+    tests:
+      - unique:
+          column_name: "concat(cast(event_date as string), '|', cast(depot_id as string))"
+
+  - name: vw_first_attempt_success
+    description: "Parcel-level delivery success summary: delivered_any and first_attempt_success flags."
+    columns:
+      - name: parcel_id
+        tests:
+          - not_null
+          - unique
+      - name: event_date
+      - name: depot_id
+      - name: courier_id
+      - name: merchant_id
+      - name: delivered_any
+        tests:
+          - accepted_values:
+              values: [0, 1]
+      - name: first_attempt_success
+        tests:
+          - accepted_values:
+              values: [0, 1]
