@@ -1,7 +1,7 @@
 # 📦 Ingestion Services
 
 ## Overview
-Relay’s **event ingestion stack** is built to handle **both real-time and historical parcel event data** with high reliability, strong schema validation, and flexible deployment.  
+This demo’s **event ingestion stack** is built to handle **both real-time and historical parcel event data** with high reliability, strong schema validation, and flexible deployment.  
 
 The stack is composed of **three core services**:
 
@@ -61,3 +61,6 @@ This ensures **fully automated CI/CD** – deployments happen within minutes of 
 
 **Cloud Build Console:**  
 [View builds in GCP Console](https://console.cloud.google.com/cloud-build/builds?hl=en&project=relay-analytics-demo)
+
+**Full Write Up can be found here:**
+[View full demo Write Up](https://docs.google.com/document/d/1zFLqC7SMvdXW7uNH0M8wRKbjYeRVnJM34D_lNLwxrJw/edit?usp=sharing)
